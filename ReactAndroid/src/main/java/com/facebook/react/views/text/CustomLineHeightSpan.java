@@ -53,12 +53,17 @@ public class CustomLineHeightSpan implements LineHeightSpan {
       fm.top = fm.bottom - mHeight;
     } else {
       // Show proportionally additional ascent / top & descent / bottom
-      final int additional = mHeight - (-fm.top + fm.bottom);
 
-      fm.top -= additional / 2;
+      // Note: we have modified React Native to properly handle multiline text
+      // with enough space in between each line. We count anything outside of
+      // the ascent/descent as "additional" for the purpose of this line
+      // height span. This fixes this issue: https://stackoverflow.com/q/47925577
+      final int additional = mHeight - (-fm.ascent + fm.descent);
+
       fm.ascent -= additional / 2;
       fm.descent += additional / 2;
-      fm.bottom += additional / 2;
+      fm.top = Math.min(fm.top, fm.ascent);
+      fm.bottom = Math.max(fm.bottom, fm.descent);
     }
   }
 }
