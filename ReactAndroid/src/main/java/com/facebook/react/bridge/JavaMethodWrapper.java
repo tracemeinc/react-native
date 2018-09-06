@@ -360,13 +360,13 @@ public class JavaMethodWrapper implements NativeModule.NativeMethod {
             jsInstance, parameters, jsArgumentsConsumed);
           jsArgumentsConsumed += mArgumentExtractors[i].getJSArgumentsNeeded();
         }
-      } catch (UnexpectedNativeTypeException e) {
+      } catch (UnexpectedNativeTypeException | ClassCastException e) {
         throw new NativeArgumentsParseException(
           e.getMessage() + " (constructing arguments for " + traceName + " at argument index " +
             getAffectedRange(jsArgumentsConsumed, mArgumentExtractors[i].getJSArgumentsNeeded()) +
             ")",
           e);
-      }
+      } 
 
       try {
         mMethod.invoke(mModuleWrapper.getModule(), mArguments);
